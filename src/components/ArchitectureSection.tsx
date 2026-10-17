@@ -217,24 +217,35 @@ export function ArchitectureSection({
       </div>
 
       {view === "diagram" ? (
-        <div className="h-[480px] overflow-hidden rounded-2xl border bg-card shadow-soft">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            fitView
-            fitViewOptions={{ padding: 0.25, maxZoom: 1 }}
-            minZoom={0.3}
-            maxZoom={1.5}
-            proOptions={{ hideAttribution: true }}
-            nodesDraggable={false}
-            nodesConnectable={false}
-            elementsSelectable
-            onNodeClick={(_, node) => setSelected((node.data as NodeData).arch)}
-          >
-            <Background gap={22} size={1} color="var(--border)" />
-            <Controls showInteractive={false} position="bottom-left" />
-          </ReactFlow>
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="grid size-4 place-items-center rounded-full bg-success text-success-foreground"><Check className="size-2.5" /></span> Done</span>
+            <span className="flex items-center gap-1.5"><MapPin className="size-4 text-primary" /> You are here</span>
+            <span className="flex items-center gap-1.5"><CircleDashed className="size-4" /> Coming up (faded)</span>
+            <span className="flex items-center gap-1.5"><span className="h-3 w-5 rounded border-2 border-dashed border-muted-foreground" /> Optional</span>
+          </div>
+          <div className="h-[560px] overflow-hidden rounded-2xl border bg-card shadow-soft">
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              fitView
+              fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
+              minZoom={0.3}
+              maxZoom={1.5}
+              proOptions={{ hideAttribution: true }}
+              nodesDraggable={false}
+              nodesConnectable={false}
+              elementsSelectable
+              onNodeClick={(_, node) => {
+                if (node.type === "arch") setSelected((node.data as NodeData).arch);
+              }}
+            >
+              <Background gap={22} size={1} color="var(--border)" />
+              <Controls showInteractive={false} position="bottom-left" />
+            </ReactFlow>
+          </div>
+          <p className="text-xs text-muted-foreground">Scroll or pinch to zoom, drag to move around. Arrows show what talks to what.</p>
         </div>
       ) : (
         <ol className="space-y-3">
