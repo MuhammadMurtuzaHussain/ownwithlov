@@ -1,4 +1,4 @@
-# Ownable roadmap
+# ownwithlov roadmap
 - [x] Backend: plans, progress, chat tables + yoga demo seed
 - [x] Email + Google sign-in
 - [x] Design system + landing page

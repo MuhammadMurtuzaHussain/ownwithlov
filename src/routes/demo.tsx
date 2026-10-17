@@ -11,10 +11,10 @@ const DEMO_ID = "00000000-0000-0000-0000-000000000001";
 export const Route = createFileRoute("/demo")({
   head: () => ({
     meta: [
-      { title: "Example plan: a yoga studio booking app — Ownable" },
-      { name: "description", content: "See a full five-phase Ownable build plan for a local yoga studio booking app." },
-      { property: "og:title", content: "Example plan: a yoga studio booking app — Ownable" },
-      { property: "og:description", content: "See a full five-phase Ownable build plan for a local yoga studio booking app." },
+      { title: "Example plan: a yoga studio booking app — ownwithlov" },
+      { name: "description", content: "See a full five-phase ownwithlov build plan for a local yoga studio booking app." },
+      { property: "og:title", content: "Example plan: a yoga studio booking app — ownwithlov" },
+      { property: "og:description", content: "See a full five-phase ownwithlov build plan for a local yoga studio booking app." },
     ],
   }),
   component: Demo,

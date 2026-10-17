@@ -21,7 +21,8 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
   const [done, setDone] = useState<Set<string>>(new Set());
   const [help, setHelp] = useState<HelpContext>(null);
   const useDb = !!session && !isDemo;
-  const storageKey = `ownable-progress-${planId}`;
+  const storageKey = `ownwithlov-progress-${planId}`;
+  const legacyKey = `ownable-progress-${planId}`;
 
   useEffect(() => {
     if (useDb) {
@@ -32,12 +33,12 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
         .then(({ data }) => setDone(new Set((data ?? []).filter((r) => r.done).map((r) => r.step_id))));
     } else {
       try {
-        setDone(new Set(JSON.parse(localStorage.getItem(storageKey) ?? "[]")));
+        setDone(new Set(JSON.parse(localStorage.getItem(storageKey) ?? localStorage.getItem(legacyKey) ?? "[]")));
       } catch {
         /* ignore */
       }
     }
-  }, [useDb, planId, storageKey]);
+  }, [useDb, planId, storageKey, legacyKey]);
 
   const toggle = useCallback(
     async (stepId: string, value: boolean) => {

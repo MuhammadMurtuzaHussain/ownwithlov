@@ -9,7 +9,7 @@ export function Logo() {
       <span className="grid size-8 place-items-center rounded-xl bg-primary font-display text-lg text-primary-foreground">
         o
       </span>
-      <span className="font-display text-xl">Ownable</span>
+      <span className="font-display text-xl">ownwithlov</span>
     </Link>
   );
 }
