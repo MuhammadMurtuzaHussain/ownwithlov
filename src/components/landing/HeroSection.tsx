@@ -10,7 +10,7 @@ type Props = {
   actions: React.ReactNode;
   image: string;
   imageAlt: string;
-  footer: { label: string; value: string }[];
+  footer: React.ReactNode;
   badge?: React.ReactNode;
   className?: string;
 };
@@ -42,14 +42,7 @@ export function HeroSection({ eyebrow, title, subtitle, actions, image, imageAlt
             {actions}
           </motion.div>
         </div>
-        <motion.div variants={item} className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
-          {footer.map((f) => (
-            <div key={f.label}>
-              <div className="text-[11px] tracking-wider text-muted-foreground uppercase">{f.label}</div>
-              <div className="font-display text-lg">{f.value}</div>
-            </div>
-          ))}
-        </motion.div>
+        <motion.div variants={item}>{footer}</motion.div>
       </div>
       <motion.div
         className="relative min-h-[300px] w-full md:min-h-full md:w-2/5"
@@ -57,7 +50,7 @@ export function HeroSection({ eyebrow, title, subtitle, actions, image, imageAlt
         animate={{ clipPath: "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)" }}
         transition={{ duration: 1.2, ease: "circOut" }}
       >
-        <img src={image} alt={imageAlt} className="absolute inset-0 size-full object-cover" />
+        <img src={image} alt={imageAlt} className="absolute inset-0 size-full object-cover object-left-top" />
         {badge && <div className="absolute right-5 bottom-5">{badge}</div>}
       </motion.div>
     </motion.section>
