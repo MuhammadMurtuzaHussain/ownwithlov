@@ -71,7 +71,7 @@ function PrintDoc({ plan, done, planId, isDemo }: { plan: BuildPlan; done: Set<s
     2: plan.setup.steps.map((s) => s.id), 3: plan.build.prompts.map((p) => p.id),
     4: plan.github.steps.map((s) => s.id), 5: plan.launch.steps.map((s) => s.id),
   };
-  const complete = (p: number) => (p === 1 ? done.has("plan-read") : (lists[p] ?? []).length > 0 && lists[p].every((id) => done.has(id)));
+  const complete = (p: number) => (p === 1 ? done.has("plan-read") : (lists[p] ?? []).length > 0 && (lists[p] ?? []).every((id) => done.has(id)));
   let current = 6;
   for (let p = 1; p <= 5; p++) if (!complete(p)) { current = p; break; }
   const nameOf = new Map(plan.architecture.nodes.map((n) => [n.id, n.name]));
