@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Printer, Rocket, Star } from "lucide-react";
+import { Check, Cpu, GitBranch, Hammer, Loader2, Map as MapIcon, Network, Pencil, Printer, Rocket, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { PHASES, allStepIds, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { revisePlan } from "@/lib/plan.functions";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { TerminalStep } from "./TerminalStep";
 import { CostPanel } from "./CostPanel";
 import { HelpChat, type HelpContext } from "./HelpChat";
