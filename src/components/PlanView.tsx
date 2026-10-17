@@ -21,7 +21,8 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
   const [done, setDone] = useState<Set<string>>(new Set());
   const [help, setHelp] = useState<HelpContext>(null);
   const useDb = !!session && !isDemo;
-  const storageKey = `ownable-progress-${planId}`;
+  const storageKey = `ownwithlov-progress-${planId}`;
+  const legacyKey = `ownable-progress-${planId}`;
 
   useEffect(() => {
     if (useDb) {

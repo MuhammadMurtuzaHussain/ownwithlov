@@ -55,7 +55,7 @@ function PrintPage() {
       supabase.from("step_progress").select("step_id, done").eq("plan_id", planId)
         .then(({ data: rows }) => setDone(new Set((rows ?? []).filter((r) => r.done).map((r) => r.step_id))));
     } else {
-      try { setDone(new Set(JSON.parse(localStorage.getItem(`ownable-progress-${planId}`) ?? "[]"))); } catch { setDone(new Set()); }
+      try { const raw = localStorage.getItem(`ownwithlov-progress-${planId}`) ?? localStorage.getItem(`ownable-progress-${planId}`); setDone(new Set(JSON.parse(raw ?? "[]"))); } catch { setDone(new Set()); }
     }
   }, [data, session, planId]);
 
