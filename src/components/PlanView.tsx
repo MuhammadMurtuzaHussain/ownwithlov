@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Printer, Rocket, Star } from "lucide-react";
+import { Check, Cpu, GitBranch, Hammer, Loader2, Map as MapIcon, Network, Pencil, Printer, Rocket, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { PHASES, allStepIds, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { revisePlan } from "@/lib/plan.functions";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { TerminalStep } from "./TerminalStep";
 import { CostPanel } from "./CostPanel";
 import { HelpChat, type HelpContext } from "./HelpChat";
@@ -91,6 +97,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="truncate pr-4 font-medium text-foreground">{plan.title}</span>
             <span className="flex shrink-0 items-center gap-3">
+              {!isDemo && <ReviseButton planId={planId} />}
               <Link to="/plans/$planId/print" params={{ planId }} className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 font-medium text-foreground hover:bg-muted">
                 <Printer className="size-3.5" /> Print or save as PDF
               </Link>
@@ -205,6 +212,66 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
 
       <HelpChat ctx={help} onClose={() => setHelp(null)} planId={isDemo ? null : planId} />
     </div>
+  );
+}
+
+function ReviseButton({ planId }: { planId: string }) {
+  const [open, setOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [busy, setBusy] = useState(false);
+  const revise = useServerFn(revisePlan);
+  const queryClient = useQueryClient();
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      await revise({ data: { planId, notes: notes.trim() || undefined } });
+      await queryClient.invalidateQueries({ queryKey: ["plan", planId] });
+      setOpen(false);
+      setNotes("");
+      toast.success("Your plan has been revised.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 font-medium text-foreground hover:bg-muted"
+      >
+        <Pencil className="size-3.5" /> Revise plan
+      </button>
+      <Dialog open={open} onOpenChange={(v) => !busy && setOpen(v)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Revise your plan</DialogTitle>
+            <DialogDescription>
+              Tell me what to change — different tools, fewer features, simpler steps — or leave it blank and I'll tidy the plan up myself.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional, e.g. “Use Netlify instead of Cloudflare” or “Remove the payments part”"
+            className="min-h-28"
+            maxLength={2000}
+          />
+          <p className="text-xs text-muted-foreground">
+            Revising rebuilds the plan, so steps you've ticked off may need ticking again.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
+            <Button onClick={submit} disabled={busy}>
+              {busy ? (<><Loader2 className="size-4 animate-spin" /> Revising… (about a minute)</>) : "Revise my plan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

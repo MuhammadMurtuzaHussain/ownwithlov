@@ -74,3 +74,64 @@ ${JSON.stringify(example)}`;
     if (error) throw new Error("Couldn't save your plan. Please try again.");
     return { id: row.id as string };
   });
+
+export const revisePlan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ planId: z.string().uuid(), notes: z.string().max(2000).optional() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { streamText } = await import("ai");
+    const { createGateway, AI_MODEL, openaiOptions, MENTOR_TONE, friendlyAiError } = await import("./ai.server");
+    const { planSchema } = await import("./plan-schema");
+
+    const { data: row, error: loadError } = await context.supabase
+      .from("plans")
+      .select("answers, plan, is_demo")
+      .eq("id", data.planId)
+      .single();
+    if (loadError || !row || row.is_demo) throw new Error("We couldn't find that plan.");
+
+    const prompt = `Revise this Build Plan as JSON, keeping the same overall shape.
+
+Original answers:
+${JSON.stringify(row.answers)}
+
+Current plan:
+${JSON.stringify(row.plan)}
+
+${data.notes?.trim() ? `The person asked for these changes:\n${data.notes.trim()}\n\nApply their requests. Keep everything else that still makes sense.` : "No specific changes requested — improve clarity, fix anything weak, and make sure every step is correct and friendly."}
+
+Rules:
+- Keep the same JSON shape exactly. Step ids may change if steps change.
+- Commands must still match their operating system; costs stay in euros per year.
+- Output ONLY the JSON object, no markdown fences.`;
+
+    let text = "";
+    try {
+      const result = streamText({
+        model: createGateway().responses(AI_MODEL),
+        system: MENTOR_TONE,
+        prompt,
+        providerOptions: openaiOptions,
+      });
+      text = await result.text;
+    } catch (err) {
+      console.error(err);
+      throw new Error(friendlyAiError(err));
+    }
+
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    let plan;
+    try {
+      plan = planSchema.parse(JSON.parse(text.slice(start, end + 1)));
+    } catch (err) {
+      console.error("Plan parse failed", err);
+      throw new Error("The revised plan came back in an odd shape. Please try once more.");
+    }
+
+    const { error } = await context.supabase.from("plans").update({ plan }).eq("id", data.planId);
+    if (error) throw new Error("Couldn't save your revised plan. Please try again.");
+    return { ok: true };
+  });
