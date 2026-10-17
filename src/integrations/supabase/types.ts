@@ -14,7 +14,109 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          context: string
+          created_at: string
+          id: string
+          plan_id: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          context?: string
+          created_at?: string
+          id?: string
+          plan_id?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          context?: string
+          created_at?: string
+          id?: string
+          plan_id?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          is_demo: boolean
+          plan: Json
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          plan: Json
+          title?: string
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          plan?: Json
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      step_progress: {
+        Row: {
+          done: boolean
+          id: string
+          plan_id: string
+          step_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          done?: boolean
+          id?: string
+          plan_id: string
+          step_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          done?: boolean
+          id?: string
+          plan_id?: string
+          step_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "step_progress_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
