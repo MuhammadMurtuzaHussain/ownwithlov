@@ -97,6 +97,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="truncate pr-4 font-medium text-foreground">{plan.title}</span>
             <span className="flex shrink-0 items-center gap-3">
+              {!isDemo && <ReviseButton planId={planId} />}
               <Link to="/plans/$planId/print" params={{ planId }} className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 font-medium text-foreground hover:bg-muted">
                 <Printer className="size-3.5" /> Print or save as PDF
               </Link>
