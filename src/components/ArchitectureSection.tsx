@@ -100,9 +100,15 @@ export function ArchitectureSection({
     return 6; // everything done
   }, [phaseComplete]);
 
+  // The pin goes on the earliest not-yet-finished phase that actually has pieces in the map
+  const currentNodePhase = useMemo(() => {
+    const phasesWithNodes = [...new Set(arch.nodes.map((n) => n.phase))].sort((a, b) => a - b);
+    return phasesWithNodes.find((p) => p >= currentPhase) ?? null;
+  }, [arch, currentPhase]);
+
   const statusOf = (node: ArchNode): Status => {
     if (phaseComplete(node.phase)) return "done";
-    return node.phase === currentPhase ? "current" : "upcoming";
+    return node.phase === currentNodePhase ? "current" : "upcoming";
   };
 
   const sentence =
@@ -124,7 +130,7 @@ export function ArchitectureSection({
         nodes.push({
           id: n.id,
           type: "arch",
-          position: { x: (phase - 1) * 300, y: i * 150 + ((phase % 2) * 60) },
+          position: { x: (phase - 1) * 265, y: i * 140 + ((phase % 2) * 55) },
           data: { arch: n, status: statusOf(n) },
         });
       });
