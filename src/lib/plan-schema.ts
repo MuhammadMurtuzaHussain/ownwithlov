@@ -8,6 +8,35 @@ export const stepSchema = z.object({
   expected: z.string(),
 });
 
+export const archNodeSchema = z.object({
+  id: z.string(),
+  name: z.string(), // plain-English name, e.g. "Your website"
+  techName: z.string(), // e.g. "React on Cloudflare Pages"
+  label: z.string(), // small uppercase label, e.g. "THE FRONT DOOR"
+  role: z.enum(["client", "service", "data", "external", "operations"]),
+  required: z.boolean(),
+  purpose: z.string(),
+  connects: z.string(), // how it connects, in plain English
+  prerequisites: z.string(),
+  alternatives: z.string(),
+  cost: z.string(), // "€0" or an amount
+  phase: z.number().int().min(1).max(5), // which build phase it belongs to
+});
+
+export const archEdgeSchema = z.object({
+  from: z.string(),
+  to: z.string(),
+  label: z.string(), // plain English, e.g. "sends sign-in"
+});
+
+export const architectureSchema = z.object({
+  nodes: z.array(archNodeSchema),
+  edges: z.array(archEdgeSchema),
+});
+
+export type ArchNode = z.infer<typeof archNodeSchema>;
+export type ArchEdge = z.infer<typeof archEdgeSchema>;
+
 export const planSchema = z.object({
   title: z.string(),
   summary: z.string(),
