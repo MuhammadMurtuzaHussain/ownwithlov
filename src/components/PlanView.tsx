@@ -33,7 +33,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
         .then(({ data }) => setDone(new Set((data ?? []).filter((r) => r.done).map((r) => r.step_id))));
     } else {
       try {
-        setDone(new Set(JSON.parse(localStorage.getItem(storageKey) ?? "[]")));
+        setDone(new Set(JSON.parse(localStorage.getItem(storageKey) ?? localStorage.getItem(legacyKey) ?? "[]")));
       } catch {
         /* ignore */
       }
