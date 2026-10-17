@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Rocket, Star } from "lucide-react";
+import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Rocket, Star } from "lucide-react";
 import { toast } from "sonner";
 import { PHASES, allStepIds, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,13 +7,16 @@ import { useAuth } from "@/lib/auth";
 import { TerminalStep } from "./TerminalStep";
 import { CostPanel } from "./CostPanel";
 import { HelpChat, type HelpContext } from "./HelpChat";
+import { ArchitectureSection } from "./ArchitectureSection";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<PhaseKey, typeof MapIcon> = { plan: MapIcon, setup: Cpu, build: Hammer, github: GitBranch, launch: Rocket };
 
+type View = PhaseKey | "arch";
+
 export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: string; isDemo: boolean }) {
   const { session } = useAuth();
-  const [phase, setPhase] = useState<PhaseKey>("plan");
+  const [phase, setPhase] = useState<View>("plan");
   const [done, setDone] = useState<Set<string>>(new Set());
   const [help, setHelp] = useState<HelpContext>(null);
   const useDb = !!session && !isDemo;
