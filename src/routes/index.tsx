@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useAuth } from "@/lib/auth";
-import hero from "@/assets/plan-preview.jpg";
+import { PlanPreview } from "@/components/landing/PlanPreview";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { Audience, Faq, FinalCta, HowItWorks, PaperStrip, PhaseLine, ProblemSection, SeeItInAction, SiteFooter } from "@/components/landing/Sections";
 
@@ -51,15 +51,8 @@ function Index() {
               </Link>
             </>
           }
-          image={hero}
-          imageAlt="An Ownable build plan for a yoga studio booking app, showing the five phases and a €12 per year launch cost"
+          preview={<PlanPreview />}
           footer={<PhaseLine />}
-          badge={
-            <div className="rounded-2xl border bg-card px-4 py-3 shadow-soft">
-              <div className="text-[11px] tracking-wider text-muted-foreground uppercase">Your launch cost</div>
-              <div className="font-display text-2xl">€12<span className="text-sm text-muted-foreground">/year</span></div>
-            </div>
-          }
         />
         <div className="space-y-28 py-24">
           <ProblemSection />

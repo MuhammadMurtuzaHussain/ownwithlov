@@ -14,3 +14,4 @@
 - Phase themes are CSS classes (.phase-*) in src/styles.css that override tokens; components use semantic tokens only so they re-theme per phase.
 - AI calls are server-only: plan generation via createServerFn (src/lib/plan.functions.ts), step help via streaming route /api/help that verifies the user's bearer token.
 - Step progress: database for signed-in owners, localStorage for the public demo plan.
+- The landing plan preview renders demo-plan data as browser text, not a screenshot, so it remains readable and links directly to the public example.
