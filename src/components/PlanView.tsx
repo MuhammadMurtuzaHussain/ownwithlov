@@ -215,6 +215,66 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
   );
 }
 
+function ReviseButton({ planId }: { planId: string }) {
+  const [open, setOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [busy, setBusy] = useState(false);
+  const revise = useServerFn(revisePlan);
+  const queryClient = useQueryClient();
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      await revise({ data: { planId, notes: notes.trim() || undefined } });
+      await queryClient.invalidateQueries({ queryKey: ["plan", planId] });
+      setOpen(false);
+      setNotes("");
+      toast.success("Your plan has been revised.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 font-medium text-foreground hover:bg-muted"
+      >
+        <Pencil className="size-3.5" /> Revise plan
+      </button>
+      <Dialog open={open} onOpenChange={(v) => !busy && setOpen(v)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Revise your plan</DialogTitle>
+            <DialogDescription>
+              Tell me what to change — different tools, fewer features, simpler steps — or leave it blank and I'll tidy the plan up myself.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional, e.g. “Use Netlify instead of Cloudflare” or “Remove the payments part”"
+            className="min-h-28"
+            maxLength={2000}
+          />
+          <p className="text-xs text-muted-foreground">
+            Revising rebuilds the plan, so steps you've ticked off may need ticking again.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
+            <Button onClick={submit} disabled={busy}>
+              {busy ? (<><Loader2 className="size-4 animate-spin" /> Revising… (about a minute)</>) : "Revise my plan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
 function PhaseIntro({ n, title, body }: { n: number; title: string; body: string }) {
   return (
     <div>
