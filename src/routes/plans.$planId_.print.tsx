@@ -21,9 +21,9 @@ export const Route = createFileRoute("/plans/$planId_/print")({
   component: PrintPage,
 });
 
-const PRINT_CSS = `
+const printCss = (name: string) => `
 @page { size: A4; margin: 18mm 16mm 20mm;
-  @bottom-left { content: var(--plan-name, "Build Plan"); font: 10pt Figtree, sans-serif; color: #333; }
+  @bottom-left { content: "${name}"; font: 10pt Figtree, sans-serif; color: #333; }
   @bottom-center { content: "Page " counter(page) " of " counter(pages); font: 10pt Figtree, sans-serif; color: #333; }
   @bottom-right { content: "Made with Ownable"; font: 10pt Figtree, sans-serif; color: #333; }
 }
@@ -86,7 +86,7 @@ function PrintDoc({ plan, done, planId, isDemo }: { plan: BuildPlan; done: Set<s
 
   return (
     <div className="min-h-screen bg-white py-8 print:py-0">
-      <style>{PRINT_CSS + `@page { --plan-name: ""; }`}</style>
+      <style>{printCss(plan.title.replace(/["\\<>]/g, "").slice(0, 60))}</style>
       <div className="no-print mx-auto mb-6 flex max-w-[210mm] flex-wrap items-center justify-between gap-3 px-4">
         <Link to={isDemo ? "/demo" : "/plans/$planId"} params={{ planId }} className="text-lg underline">← Back to my plan</Link>
         <button onClick={() => window.print()} className="rounded-xl border-2 border-black px-5 py-2.5 text-lg font-semibold">

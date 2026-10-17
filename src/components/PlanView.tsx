@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Rocket, Star } from "lucide-react";
+import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Printer, Rocket, Star } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 import { PHASES, allStepIds, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -88,7 +89,12 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
         <div className="mx-auto max-w-6xl px-5 py-3">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="truncate pr-4 font-medium text-foreground">{plan.title}</span>
-            <span className="shrink-0">{Math.round(overall * 100)}% complete</span>
+            <span className="flex shrink-0 items-center gap-3">
+              <Link to="/plans/$planId/print" params={{ planId }} className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 font-medium text-foreground hover:bg-muted">
+                <Printer className="size-3.5" /> Print or save as PDF
+              </Link>
+              {Math.round(overall * 100)}% complete
+            </span>
           </div>
           <div className="mt-2 grid grid-cols-5 gap-1.5">
             {PHASES.map((p) => (
