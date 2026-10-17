@@ -69,6 +69,7 @@ export const planSchema = z.object({
   costs: z.array(
     z.object({ item: z.string(), amount: z.number(), label: z.string(), note: z.string(), optional: z.boolean() }),
   ),
+  architecture: architectureSchema,
 });
 
 export type BuildPlan = z.infer<typeof planSchema>;

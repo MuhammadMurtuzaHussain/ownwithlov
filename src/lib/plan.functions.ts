@@ -38,6 +38,7 @@ Rules:
 - 4–7 build prompts, small feature-sized, copy-ready, written to a coding agent.
 - Cost items: AI model, Coding agent, GitHub, Hosting, Database${data.domain.toLowerCase().startsWith("y") ? ", Domain (amount 12, optional true)" : ""}. amount is euros per year (number). Each note explains in plain words when it would start costing money.
 - Step ids must be unique short slugs.
+- "architecture": a map of how the pieces of THEIR app fit together, built from the stack you chose for them. 5–9 nodes. Each node: id (short slug), name (plain English, e.g. "Your website"), techName (e.g. "React on Cloudflare Pages"), label (short uppercase nickname, e.g. "THE FRONT DOOR"), role (client | service | data | external | operations), required (boolean), purpose (one plain sentence), connects (how it talks to the others, plain English), prerequisites (what must exist first, plain English), alternatives (other options they could have used), cost ("€0" or an amount in euros), phase (1=plan, 2=set up, 3=build, 4=github, 5=launch — the phase where they create this piece). Edges: from/to node ids with a short plain-English label like "sends sign-in" or "saves bookings". Optional pieces (custom domain, error monitoring, payments) get required:false.
 - Output ONLY the JSON object, no markdown fences, in exactly the same shape as this example:
 ${JSON.stringify(example)}`;
 
