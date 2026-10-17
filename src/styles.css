@@ -196,6 +196,20 @@
   animation: phase-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
+@utility arch-pulse {
+  animation: arch-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes arch-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in oklab, var(--primary) 0%, transparent);
+  }
+}
+
 @keyframes phase-in {
   from {
     opacity: 0;

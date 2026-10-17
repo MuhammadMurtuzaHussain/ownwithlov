@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Rocket, Star } from "lucide-react";
+import { Check, Cpu, GitBranch, Hammer, Map as MapIcon, Network, Rocket, Star } from "lucide-react";
 import { toast } from "sonner";
 import { PHASES, allStepIds, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,13 +7,16 @@ import { useAuth } from "@/lib/auth";
 import { TerminalStep } from "./TerminalStep";
 import { CostPanel } from "./CostPanel";
 import { HelpChat, type HelpContext } from "./HelpChat";
+import { ArchitectureSection } from "./ArchitectureSection";
 import { cn } from "@/lib/utils";
 
 const ICONS: Record<PhaseKey, typeof MapIcon> = { plan: MapIcon, setup: Cpu, build: Hammer, github: GitBranch, launch: Rocket };
 
+type View = PhaseKey | "arch";
+
 export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: string; isDemo: boolean }) {
   const { session } = useAuth();
-  const [phase, setPhase] = useState<PhaseKey>("plan");
+  const [phase, setPhase] = useState<View>("plan");
   const [done, setDone] = useState<Set<string>>(new Set());
   const [help, setHelp] = useState<HelpContext>(null);
   const useDb = !!session && !isDemo;
@@ -64,7 +67,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
     return list.length ? list.filter((id) => done.has(id)).length / list.length : 0;
   };
   const overall = PHASES.reduce((s, p) => s + phaseProgress(p.key), 0) / PHASES.length;
-  const theme = PHASES.find((p) => p.key === phase)!.theme;
+  const theme = phase === "arch" ? "phase-plan" : PHASES.find((p) => p.key === phase)!.theme;
 
   const stepProps = (s: { id: string; title: string; explain: string; command: string; expected: string }, i: number, label?: string) => ({
     index: i + 1,
@@ -112,6 +115,15 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
                 </button>
               );
             })}
+            <button
+              onClick={() => setPhase("arch")}
+              className={cn(
+                "flex shrink-0 items-center gap-2 rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                phase === "arch" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <Network className="size-4" /> Architecture
+            </button>
           </nav>
         </div>
       </div>
@@ -119,6 +131,16 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[1fr_300px]">
         <div className="order-2 lg:order-1">
           <div key={phase} className="phase-enter space-y-6">
+            {phase === "arch" && (
+              <ArchitectureSection
+                plan={plan}
+                done={done}
+                onGoToPhase={(p) => {
+                  setPhase(p);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            )}
             {phase === "plan" && <PlanPhase plan={plan} read={done.has("plan-read")} onRead={() => toggle("plan-read", true)} onNext={() => setPhase("setup")} />}
 
             {phase === "setup" && (

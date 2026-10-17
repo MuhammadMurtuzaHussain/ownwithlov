@@ -81,5 +81,24 @@
     { "item": "Hosting", "amount": 0, "label": "€0 (free tier)", "note": "Only costs money if you need more than 500 updates a month.", "optional": false },
     { "item": "Database", "amount": 0, "label": "€0 (free tier)", "note": "Starts costing ~€25/month past 500MB or 50,000 users — far beyond a local studio.", "optional": false },
     { "item": "Domain", "amount": 12, "label": "~€10–15/year", "note": "Optional. Renews yearly. You can launch on a free .pages.dev address instead.", "optional": true }
-  ]
+  ],
+  "architecture": {
+    "nodes": [
+      { "id": "website", "name": "Your website", "techName": "React on Cloudflare Pages", "label": "THE FRONT DOOR", "role": "client", "required": true, "purpose": "The screens students see and tap: the timetable, the book button, My bookings.", "connects": "Talks to the accounts & data service over a secure connection whenever someone signs in or books.", "prerequisites": "Node.js and a code editor installed (Set up phase).", "alternatives": "Vue or Svelte instead of React; Netlify or Vercel instead of Cloudflare Pages.", "cost": "€0", "phase": 3 },
+      { "id": "accounts-data", "name": "Accounts & data", "techName": "Supabase", "label": "THE FILING CABINET", "role": "data", "required": true, "purpose": "Remembers who each student is, the classes, and every booking — safely, so students only see their own.", "connects": "Answers requests from your website: sign-ins, class lists, new bookings.", "prerequisites": "A free Supabase account; your website built enough to ask it questions.", "alternatives": "PocketBase (self-hosted) or Firebase.", "cost": "€0", "phase": 3 },
+      { "id": "ai-model", "name": "Your AI helper", "techName": "Qwen2.5-Coder 7B via Ollama", "label": "THE ASSISTANT", "role": "service", "required": true, "purpose": "The model that writes the code when your coding agent asks it to.", "connects": "Runs on your own computer; your coding agent sends it your prompts.", "prerequisites": "Ollama installed (Set up phase).", "alternatives": "A free cloud model if your computer feels slow.", "cost": "€0", "phase": 2 },
+      { "id": "coding-agent", "name": "Your coding agent", "techName": "OpenCode in the terminal", "label": "THE BUILDER", "role": "operations", "required": true, "purpose": "You describe what you want in plain English; it turns that into real code in your project.", "connects": "Reads and writes your project files; asks your AI helper for the code.", "prerequisites": "Node.js installed (Set up phase).", "alternatives": "Qwen Code or Aider.", "cost": "€0", "phase": 2 },
+      { "id": "github", "name": "Your safety copy", "techName": "Git + GitHub", "label": "THE VAULT", "role": "operations", "required": true, "purpose": "Keeps every version of your project safe online, so nothing is ever lost.", "connects": "Your computer pushes saved versions up; your hosting watches it for new versions.", "prerequisites": "Git installed and a free GitHub account.", "alternatives": "GitLab or Codeberg.", "cost": "€0", "phase": 4 },
+      { "id": "hosting", "name": "Your hosting", "techName": "Cloudflare Pages", "label": "THE SHOPFRONT", "role": "service", "required": true, "purpose": "Puts your website on the internet so anyone can visit it, day or night.", "connects": "Watches your safety copy on GitHub and publishes the newest version automatically.", "prerequisites": "Your project pushed to GitHub (Save to GitHub phase).", "alternatives": "Netlify or Vercel.", "cost": "€0", "phase": 5 },
+      { "id": "domain", "name": "Your own address", "techName": "lotusyoga.ie via Cloudflare", "label": "THE SIGN ABOVE THE DOOR", "role": "external", "required": false, "purpose": "A memorable address like lotusyoga.ie instead of the free .pages.dev one.", "connects": "Points visitors to your hosting.", "prerequisites": "Your site live on hosting.", "alternatives": "Porkbun, or skip it and use the free address.", "cost": "~€12/year", "phase": 5 }
+    ],
+    "edges": [
+      { "from": "website", "to": "accounts-data", "label": "sends sign-in, saves bookings" },
+      { "from": "coding-agent", "to": "ai-model", "label": "asks for code" },
+      { "from": "coding-agent", "to": "website", "label": "writes the pages" },
+      { "from": "website", "to": "github", "label": "saves every version" },
+      { "from": "github", "to": "hosting", "label": "publishes updates" },
+      { "from": "domain", "to": "hosting", "label": "points visitors" }
+    ]
+  }
 }
