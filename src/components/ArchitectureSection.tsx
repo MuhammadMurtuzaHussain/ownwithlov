@@ -111,10 +111,11 @@ export function ArchitectureSection({
     return node.phase === currentNodePhase ? "current" : "upcoming";
   };
 
+  const sentencePhase = currentNodePhase ?? currentPhase;
   const sentence =
     currentPhase > 5
       ? "Everything is built and live — the whole map is yours. 🎉"
-      : `${PHASE_SENTENCES[currentPhase]?.done ?? ""} ${PHASE_SENTENCES[currentPhase]?.next ?? ""}`.trim();
+      : `${PHASE_SENTENCES[sentencePhase]?.done ?? ""} ${PHASE_SENTENCES[sentencePhase]?.next ?? ""}`.trim();
 
   const { nodes, edges } = useMemo(() => {
     // Left-to-right columns by phase, stacked vertically within a phase
