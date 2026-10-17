@@ -51,6 +51,8 @@ function ArchCard({ data }: NodeProps<Node<NodeData>>) {
       </div>
       <div className="mt-1 font-display text-lg leading-tight font-semibold">{arch.name}</div>
       <div className="mt-0.5 text-sm text-muted-foreground">{arch.techName}</div>
+      <Handle id="r" type="source" position={Position.Right} className="!size-2 !border-0 !bg-muted-foreground/50" />
+      <Handle id="l" type="target" position={Position.Left} className="!size-2 !border-0 !bg-muted-foreground/50" />
       <Handle type="source" position={Position.Bottom} className="!size-2 !border-0 !bg-muted-foreground/50" />
     </div>
   );
@@ -128,7 +130,7 @@ export function ArchitectureSection({
 
   const { nodes, edges } = useMemo(() => {
     // Clear columns: one per phase, with a header, cards centred vertically
-    const COL_W = 296;
+    const COL_W = 304;
     const ROW_H = 230;
     const byPhase = new Map<number, ArchNode[]>();
     for (const n of arch.nodes) {
@@ -147,19 +149,25 @@ export function ArchitectureSection({
         nodes.push({ id: n.id, type: "arch", position: { x: offset + i * COL_W, y: y + 70 }, data: { arch: n, status: statusOf(n) } });
       });
     });
-    const edges: Edge[] = arch.edges.map((e, i) => ({
+    const phaseOf = new Map(arch.nodes.map((n) => [n.id, n.phase]));
+    const edges: Edge[] = arch.edges.map((e, i) => {
+      const sameRow = phaseOf.get(e.from) === phaseOf.get(e.to);
+      const pos = Object.fromEntries(nodes.map((n) => [n.id, n.position.x]));
+      const ltr = (pos[e.from] ?? 0) <= (pos[e.to] ?? 0);
+      return {
       id: `e${i}`,
-      source: e.from,
-      target: e.to,
-      type: "smoothstep",
-      label: e.label,
+      source: sameRow && !ltr ? e.to : e.from,
+      target: sameRow && !ltr ? e.from : e.to,
+      ...(sameRow ? { sourceHandle: "r", targetHandle: "l", type: "straight" } : { type: "smoothstep" }),
+      label: sameRow ? undefined : e.label,
       markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: "var(--muted-foreground)" },
       labelStyle: { fontSize: 13, fill: "var(--foreground)", fontWeight: 500 },
       labelBgStyle: { fill: "var(--card)", stroke: "var(--border)" },
       labelBgPadding: [6, 3] as [number, number],
       labelBgBorderRadius: 6,
       style: { stroke: "var(--muted-foreground)", strokeWidth: 1.5, strokeOpacity: 0.7 },
-    }));
+      };
+    });
     return { nodes, edges };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arch, currentPhase, done]);
