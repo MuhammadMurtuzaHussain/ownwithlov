@@ -12,9 +12,9 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — Ownable" },
+      { title: "Sign in — ownwithlov" },
       { name: "description", content: "Sign in to save your build plan and progress." },
-      { property: "og:title", content: "Sign in — Ownable" },
+      { property: "og:title", content: "Sign in — ownwithlov" },
       { property: "og:description", content: "Sign in to save your build plan and progress." },
     ],
   }),

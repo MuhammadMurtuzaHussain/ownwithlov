@@ -10,9 +10,9 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/plans/$planId")({
   head: () => ({
     meta: [
-      { title: "Your build plan — Ownable" },
+      { title: "Your build plan — ownwithlov" },
       { name: "description", content: "Your personalised five-phase build plan." },
-      { property: "og:title", content: "Your build plan — Ownable" },
+      { property: "og:title", content: "Your build plan — ownwithlov" },
       { property: "og:description", content: "Your personalised five-phase build plan." },
     ],
   }),

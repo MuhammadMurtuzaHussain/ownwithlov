@@ -5,10 +5,10 @@ import { SiteFooter } from "@/components/landing/Sections";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy — Ownable" },
-      { name: "description", content: "What Ownable stores about you and why." },
-      { property: "og:title", content: "Privacy — Ownable" },
-      { property: "og:description", content: "What Ownable stores about you and why." },
+      { title: "Privacy — ownwithlov" },
+      { name: "description", content: "What ownwithlov stores about you and why." },
+      { property: "og:title", content: "Privacy — ownwithlov" },
+      { property: "og:description", content: "What ownwithlov stores about you and why." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

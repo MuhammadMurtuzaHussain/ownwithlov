@@ -10,9 +10,9 @@ import { Audience, Faq, FinalCta, HowItWorks, PaperStrip, PhaseLine, ProblemSect
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ownable — Build it. Ship it. Own it." },
+      { title: "ownwithlov — Build it. Ship it. Own it." },
       { name: "description", content: "Your AI guide to building real apps with open-source tools — with the full cost shown upfront." },
-      { property: "og:title", content: "Ownable — Build it. Ship it. Own it." },
+      { property: "og:title", content: "ownwithlov — Build it. Ship it. Own it." },
       { property: "og:description", content: "Your AI guide to building real apps with open-source tools — with the full cost shown upfront." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

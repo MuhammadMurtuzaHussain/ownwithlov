@@ -71,7 +71,7 @@ export function ProblemSection() {
   ];
   return (
     <section className="space-y-8">
-      <Heading eyebrow="The problem" title="Great for a prototype. Then what?" body="AI builders are a brilliant way to start. Ownable is the next step — when you want something that's truly yours." />
+      <Heading eyebrow="The problem" title="Great for a prototype. Then what?" body="AI builders are a brilliant way to start. ownwithlov is the next step — when you want something that's truly yours." />
       <Reveal>
         <div className="grid overflow-hidden rounded-[2rem] border bg-card shadow-soft md:grid-cols-2">
           <div className="p-8 md:p-10">
@@ -83,7 +83,7 @@ export function ProblemSection() {
             </ul>
           </div>
           <div className="border-t bg-secondary/60 p-8 md:border-t-0 md:border-l md:p-10">
-            <div className="font-display text-2xl text-primary">With Ownable</div>
+            <div className="font-display text-2xl text-primary">With ownwithlov</div>
             <ul className="mt-6 space-y-4">
               {rows.map(([, b]) => (
                 <li key={b} className="flex gap-3 font-medium"><Check className="mt-1 size-4 shrink-0 text-success" />{b}</li>
@@ -201,7 +201,7 @@ export function PaperStrip() {
 
 export function Faq() {
   const items: [string, string][] = [
-    ["Do I need to know how to code?", "No. Ownable explains every step in plain English and tells you exactly what to type and what you should see. You'll pick up real skills along the way."],
+    ["Do I need to know how to code?", "No. ownwithlov explains every step in plain English and tells you exactly what to type and what you should see. You'll pick up real skills along the way."],
     ["Is it really free?", "The tools are free and open source. The only likely cost is an optional web address (a domain), around €10–15 a year. Every cost is shown before you start."],
     ["What if my laptop is old?", "Tell us how much memory it has and we'll pick an AI model that fits. Most laptops from the last few years work fine."],
     ["What happens if I get stuck?", "Every step has a \"Something went wrong?\" button. Paste what you see and your guide explains what happened and what to try next."],
@@ -242,7 +242,7 @@ export function SiteFooter() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2">
           <span className="grid size-7 place-items-center rounded-lg bg-primary font-display text-primary-foreground">o</span>
-          <span className="font-display text-lg text-foreground">Ownable</span>
+          <span className="font-display text-lg text-foreground">ownwithlov</span>
         </div>
         <nav className="flex flex-wrap gap-6">
           <Link to="/about" className="hover:text-foreground">About</Link>
