@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ReactFlow, Background, Controls, Handle, Position, type Edge, type Node, type NodeProps } from "@xyflow/react";
+import { ReactFlow, Background, Controls, Handle, MarkerType, Position, type Edge, type Node, type NodeProps } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Check, CircleDashed, List, MapPin, Network } from "lucide-react";
 import { PHASES, type ArchNode, type BuildPlan, type PhaseKey } from "@/lib/plan-schema";
@@ -56,7 +56,16 @@ function ArchCard({ data }: NodeProps<Node<NodeData>>) {
   );
 }
 
-const nodeTypes = { arch: ArchCard };
+function PhaseHeader({ data }: NodeProps<Node<{ phase: number }>>) {
+  return (
+    <div className="pointer-events-none w-56 border-b-2 border-dashed pb-2 text-center">
+      <div className="text-[10px] font-semibold tracking-widest text-primary uppercase">Phase {data.phase}</div>
+      <div className="font-display text-lg font-semibold">{PHASES[data.phase - 1]?.label}</div>
+    </div>
+  );
+}
+
+const nodeTypes = { arch: ArchCard, phaseHeader: PhaseHeader };
 
 const PHASE_SENTENCES: Record<number, { done: string; next: string }> = {
   1: { done: "", next: "First, you're agreeing the plan for what we're making." },
@@ -118,33 +127,51 @@ export function ArchitectureSection({
       : `${PHASE_SENTENCES[sentencePhase]?.done ?? ""} ${PHASE_SENTENCES[sentencePhase]?.next ?? ""}`.trim();
 
   const { nodes, edges } = useMemo(() => {
-    // Left-to-right columns by phase, stacked vertically within a phase
+    // Clear columns: one per phase, with a header, cards centred vertically
+    const COL_W = 320;
+    const ROW_H = 150;
     const byPhase = new Map<number, ArchNode[]>();
     for (const n of arch.nodes) {
       const list = byPhase.get(n.phase) ?? [];
       list.push(n);
       byPhase.set(n.phase, list);
     }
-    const nodes: Node<NodeData>[] = [];
-    for (const [phase, list] of byPhase) {
+    const phases = [...byPhase.keys()].sort((a, b) => a - b);
+    const maxRows = Math.max(1, ...[...byPhase.values()].map((l) => l.length));
+    const nodes: Node<any>[] = [];
+    phases.forEach((phase, col) => {
+      const list = byPhase.get(phase)!;
+      const x = col * COL_W;
+      nodes.push({
+        id: `phase-${phase}`,
+        type: "phaseHeader",
+        position: { x, y: -90 },
+        data: { phase },
+        selectable: false,
+        draggable: false,
+      });
+      const offset = ((maxRows - list.length) * ROW_H) / 2;
       list.forEach((n, i) => {
         nodes.push({
           id: n.id,
           type: "arch",
-          position: { x: (phase - 1) * 265, y: i * 140 + ((phase % 2) * 55) },
+          position: { x, y: offset + i * ROW_H },
           data: { arch: n, status: statusOf(n) },
         });
       });
-    }
+    });
     const edges: Edge[] = arch.edges.map((e, i) => ({
       id: `e${i}`,
       source: e.from,
       target: e.to,
+      type: "smoothstep",
       label: e.label,
-      labelStyle: { fontSize: 11, fill: "var(--muted-foreground)", fontFamily: "var(--font-mono)" },
-      labelBgStyle: { fill: "var(--card)", fillOpacity: 0.9 },
-      style: { stroke: "var(--muted-foreground)", strokeOpacity: 0.5 },
-      animated: false,
+      markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: "var(--muted-foreground)" },
+      labelStyle: { fontSize: 11, fill: "var(--foreground)", fontWeight: 500 },
+      labelBgStyle: { fill: "var(--card)", stroke: "var(--border)" },
+      labelBgPadding: [6, 3] as [number, number],
+      labelBgBorderRadius: 6,
+      style: { stroke: "var(--muted-foreground)", strokeWidth: 1.5, strokeOpacity: 0.7 },
     }));
     return { nodes, edges };
     // eslint-disable-next-line react-hooks/exhaustive-deps
