@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as StartRouteImport } from './routes/start'
 import { Route as ApiHelpRouteImport } from './routes/api/help'
 import { Route as PlansIndexRouteImport } from './routes/plans.index'
 import { Route as PlansPlanIdRouteImport } from './routes/plans.$planId'
@@ -29,6 +30,11 @@ const DemoRoute = DemoRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHelpRoute = ApiHelpRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans/': typeof PlansIndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans': typeof PlansIndexRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans/': typeof PlansIndexRoute
@@ -75,14 +84,28 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/demo' | '/login' | '/api/help' | '/plans/$planId' | '/plans/'
+    | '/'
+    | '/demo'
+    | '/login'
+    | '/start'
+    | '/api/help'
+    | '/plans/$planId'
+    | '/plans/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo' | '/login' | '/api/help' | '/plans/$planId' | '/plans'
+  to:
+    | '/'
+    | '/demo'
+    | '/login'
+    | '/start'
+    | '/api/help'
+    | '/plans/$planId'
+    | '/plans'
   id:
     | '__root__'
     | '/'
     | '/demo'
     | '/login'
+    | '/start'
     | '/api/help'
     | '/plans/$planId'
     | '/plans/'
@@ -92,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  StartRoute: typeof StartRoute
   ApiHelpRoute: typeof ApiHelpRoute
   PlansPlanIdRoute: typeof PlansPlanIdRoute
   PlansIndexRoute: typeof PlansIndexRoute
@@ -118,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/help': {
@@ -148,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  StartRoute: StartRoute,
   ApiHelpRoute: ApiHelpRoute,
   PlansPlanIdRoute: PlansPlanIdRoute,
   PlansIndexRoute: PlansIndexRoute,
