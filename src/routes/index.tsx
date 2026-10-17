@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, KeyRound, Receipt, Footprints } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useAuth } from "@/lib/auth";
-import hero from "@/assets/hero.jpg";
+import hero from "@/assets/plan-preview.jpg";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { FeatureGrid } from "@/components/landing/FeatureGrid";
+import { Audience, Faq, FinalCta, HowItWorks, PaperStrip, PhaseLine, ProblemSection, SeeItInAction, SiteFooter } from "@/components/landing/Sections";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,16 +14,12 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Your AI guide to building real apps with open-source tools — with the full cost shown upfront." },
       { property: "og:title", content: "Ownable — Build it. Ship it. Own it." },
       { property: "og:description", content: "Your AI guide to building real apps with open-source tools — with the full cost shown upfront." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
-
-const POINTS = [
-  { icon: Footprints, title: "One step at a time", body: "A patient guide explains why before how. No jargon, no rush." },
-  { icon: Receipt, title: "Every euro upfront", body: "See exactly what your app costs to run — usually €0, plus an optional domain." },
-  { icon: KeyRound, title: "Yours to keep", body: "Your code, your GitHub, your hosting. No subscriptions, no lock-in." },
-];
 
 function Index() {
   const { session } = useAuth();
@@ -56,12 +52,8 @@ function Index() {
             </>
           }
           image={hero}
-          imageAlt="A cozy desk with a laptop and a hand-drawn roadmap"
-          footer={[
-            { label: "Phases", value: "5 guided steps" },
-            { label: "Tools", value: "Open source" },
-            { label: "Lock-in", value: "None" },
-          ]}
+          imageAlt="An Ownable build plan for a yoga studio booking app, showing the five phases and a €12 per year launch cost"
+          footer={<PhaseLine />}
           badge={
             <div className="rounded-2xl border bg-card px-4 py-3 shadow-soft">
               <div className="text-[11px] tracking-wider text-muted-foreground uppercase">Your launch cost</div>
@@ -69,13 +61,17 @@ function Index() {
             </div>
           }
         />
-        <FeatureGrid
-          eyebrow="Why Ownable"
-          title="A mentor, not a magic button"
-          body="You do the building. We make sure every step makes sense — and that nothing costs more than you expect."
-          features={POINTS}
-        />
+        <div className="space-y-28 py-24">
+          <ProblemSection />
+          <HowItWorks />
+          <SeeItInAction />
+          <Audience />
+          <PaperStrip />
+          <Faq />
+          <FinalCta to={session ? "/start" : "/login"} />
+        </div>
       </main>
+      <SiteFooter />
     </div>
   );
 }

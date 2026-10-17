@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as ApiHelpRouteImport } from './routes/api/help'
 import { Route as PlansIndexRouteImport } from './routes/plans.index'
@@ -23,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
@@ -31,6 +38,11 @@ const DemoRoute = DemoRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StartRoute = StartRouteImport.update({
@@ -61,8 +73,10 @@ const PlansPlanIdPrintRoute = PlansPlanIdPrintRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
@@ -71,8 +85,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
@@ -82,8 +98,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/demo': typeof DemoRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/start': typeof StartRoute
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
@@ -94,8 +112,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/demo'
     | '/login'
+    | '/privacy'
     | '/start'
     | '/api/help'
     | '/plans/$planId'
@@ -104,8 +124,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/demo'
     | '/login'
+    | '/privacy'
     | '/start'
     | '/api/help'
     | '/plans/$planId'
@@ -114,8 +136,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/demo'
     | '/login'
+    | '/privacy'
     | '/start'
     | '/api/help'
     | '/plans/$planId'
@@ -125,8 +149,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   DemoRoute: typeof DemoRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   StartRoute: typeof StartRoute
   ApiHelpRoute: typeof ApiHelpRoute
   PlansPlanIdRoute: typeof PlansPlanIdRoute
@@ -143,6 +169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo': {
       id: '/demo'
       path: '/demo'
@@ -155,6 +188,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/start': {
@@ -197,8 +237,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   DemoRoute: DemoRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   StartRoute: StartRoute,
   ApiHelpRoute: ApiHelpRoute,
   PlansPlanIdRoute: PlansPlanIdRoute,
