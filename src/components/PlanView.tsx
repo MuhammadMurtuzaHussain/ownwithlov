@@ -67,7 +67,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
     return list.length ? list.filter((id) => done.has(id)).length / list.length : 0;
   };
   const overall = PHASES.reduce((s, p) => s + phaseProgress(p.key), 0) / PHASES.length;
-  const theme = PHASES.find((p) => p.key === phase)!.theme;
+  const theme = phase === "arch" ? "phase-plan" : PHASES.find((p) => p.key === phase)!.theme;
 
   const stepProps = (s: { id: string; title: string; explain: string; command: string; expected: string }, i: number, label?: string) => ({
     index: i + 1,
@@ -115,6 +115,15 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
                 </button>
               );
             })}
+            <button
+              onClick={() => setPhase("arch")}
+              className={cn(
+                "flex shrink-0 items-center gap-2 rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                phase === "arch" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <Network className="size-4" /> Architecture
+            </button>
           </nav>
         </div>
       </div>
