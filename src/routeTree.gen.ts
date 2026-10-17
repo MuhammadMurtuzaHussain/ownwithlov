@@ -16,6 +16,7 @@ import { Route as StartRouteImport } from './routes/start'
 import { Route as ApiHelpRouteImport } from './routes/api/help'
 import { Route as PlansIndexRouteImport } from './routes/plans.index'
 import { Route as PlansPlanIdRouteImport } from './routes/plans.$planId'
+import { Route as PlansPlanIdPrintRouteImport } from './routes/plans.$planId_.print'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const PlansPlanIdRoute = PlansPlanIdRouteImport.update({
   path: '/plans/$planId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlansPlanIdPrintRoute = PlansPlanIdPrintRouteImport.update({
+  id: '/plans/$planId_/print',
+  path: '/plans/$planId/print',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans/': typeof PlansIndexRoute
+  '/plans/$planId/print': typeof PlansPlanIdPrintRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans': typeof PlansIndexRoute
+  '/plans/$planId/print': typeof PlansPlanIdPrintRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/api/help': typeof ApiHelpRoute
   '/plans/$planId': typeof PlansPlanIdRoute
   '/plans/': typeof PlansIndexRoute
+  '/plans/$planId_/print': typeof PlansPlanIdPrintRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/api/help'
     | '/plans/$planId'
     | '/plans/'
+    | '/plans/$planId/print'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/api/help'
     | '/plans/$planId'
     | '/plans'
+    | '/plans/$planId/print'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/api/help'
     | '/plans/$planId'
     | '/plans/'
+    | '/plans/$planId_/print'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   ApiHelpRoute: typeof ApiHelpRoute
   PlansPlanIdRoute: typeof PlansPlanIdRoute
   PlansIndexRoute: typeof PlansIndexRoute
+  PlansPlanIdPrintRoute: typeof PlansPlanIdPrintRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlansPlanIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/plans/$planId_/print': {
+      id: '/plans/$planId_/print'
+      path: '/plans/$planId/print'
+      fullPath: '/plans/$planId/print'
+      preLoaderRoute: typeof PlansPlanIdPrintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHelpRoute: ApiHelpRoute,
   PlansPlanIdRoute: PlansPlanIdRoute,
   PlansIndexRoute: PlansIndexRoute,
+  PlansPlanIdPrintRoute: PlansPlanIdPrintRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
