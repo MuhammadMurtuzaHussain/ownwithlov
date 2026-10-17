@@ -38,7 +38,7 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
         /* ignore */
       }
     }
-  }, [useDb, planId, storageKey]);
+  }, [useDb, planId, storageKey, legacyKey]);
 
   const toggle = useCallback(
     async (stepId: string, value: boolean) => {
