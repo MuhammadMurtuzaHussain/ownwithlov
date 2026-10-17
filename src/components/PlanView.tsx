@@ -131,6 +131,16 @@ export function PlanView({ plan, planId, isDemo }: { plan: BuildPlan; planId: st
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-8 lg:grid-cols-[1fr_300px]">
         <div className="order-2 lg:order-1">
           <div key={phase} className="phase-enter space-y-6">
+            {phase === "arch" && (
+              <ArchitectureSection
+                plan={plan}
+                done={done}
+                onGoToPhase={(p) => {
+                  setPhase(p);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            )}
             {phase === "plan" && <PlanPhase plan={plan} read={done.has("plan-read")} onRead={() => toggle("plan-read", true)} onNext={() => setPhase("setup")} />}
 
             {phase === "setup" && (
