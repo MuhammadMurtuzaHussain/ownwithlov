@@ -200,7 +200,7 @@ export function PaperStrip() {
 }
 
 export function Faq() {
-  const items = [
+  const items: [string, string][] = [
     ["Do I need to know how to code?", "No. Ownable explains every step in plain English and tells you exactly what to type and what you should see. You'll pick up real skills along the way."],
     ["Is it really free?", "The tools are free and open source. The only likely cost is an optional web address (a domain), around €10–15 a year. Every cost is shown before you start."],
     ["What if my laptop is old?", "Tell us how much memory it has and we'll pick an AI model that fits. Most laptops from the last few years work fine."],
