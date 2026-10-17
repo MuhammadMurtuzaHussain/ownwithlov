@@ -12,7 +12,7 @@ type Props = {
   done: boolean;
   onToggle: (done: boolean) => void;
   onHelp: () => void;
-  label?: string;
+  label?: string | undefined;
 };
 
 export function TerminalStep({ index, title, explain, command, expected, done, onToggle, onHelp, label = "terminal" }: Props) {

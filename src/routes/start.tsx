@@ -25,7 +25,7 @@ export const Route = createFileRoute("/start")({
 });
 
 type Q = { key: keyof Answers; ask: string; chips?: string[]; multi?: boolean; placeholder?: string };
-const QUESTIONS: Q[] = [
+const QUESTIONS = [
   { key: "idea", ask: "Hi! I'm your build guide. Let's start with the fun part — what do you want to build? Describe it like you'd tell a friend.", placeholder: "e.g. A booking app for my yoga studio" },
   { key: "audience", ask: "Lovely. Who is it for? Knowing the people helps us keep it simple for them.", placeholder: "e.g. My students and me" },
   { key: "needs", ask: "Does it need any of these? Pick all that apply — it's fine to pick none.", chips: ["User accounts", "A database", "Payments", "File uploads"], multi: true },
@@ -33,7 +33,7 @@ const QUESTIONS: Q[] = [
   { key: "ram", ask: "Roughly how much memory (RAM) does it have? This decides which free AI model can run on it. Not sure? Pick 8GB — we'll be safe.", chips: ["8GB", "16GB", "32GB+"] },
   { key: "comfort", ask: "How comfortable are you with tech? No wrong answer — I'll adjust how much I explain.", chips: ["Never opened a terminal", "A little", "Comfortable"] },
   { key: "domain", ask: "Last one: would you like your own web address, like yourname.com? It's optional and costs about €10–15 a year.", chips: ["Yes", "Not now"] },
-];
+] as [Q, ...Q[]];
 
 type Msg = { role: "assistant" | "user"; text: string };
 
@@ -59,7 +59,7 @@ function Start() {
   }, [messages]);
 
   const done = step >= QUESTIONS.length;
-  const q = QUESTIONS[step];
+  const q = QUESTIONS[step] as Q;
 
   const answer = (value: string) => {
     if (!value.trim() || !q) return;
@@ -69,7 +69,7 @@ function Start() {
     const nextMsgs: Msg[] = [...messages, { role: "user", text: value.trim() }];
     nextMsgs.push(
       nextStep < QUESTIONS.length
-        ? { role: "assistant", text: QUESTIONS[nextStep].ask }
+        ? { role: "assistant", text: QUESTIONS[nextStep]!.ask }
         : { role: "assistant", text: "Thank you — that's everything I need. When you're ready, I'll put together your personalised Build Plan, with every step and every euro laid out." },
     );
     setMessages(nextMsgs);

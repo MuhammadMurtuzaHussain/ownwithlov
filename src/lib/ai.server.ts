@@ -3,7 +3,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 export const AI_MODEL = "openai/gpt-6-astra";
 
 export function createGateway() {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw new Error("AI is not configured.");
   let runId: string | undefined;
   return createOpenAI({

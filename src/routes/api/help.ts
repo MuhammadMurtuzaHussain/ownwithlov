@@ -7,7 +7,7 @@ export const Route = createFileRoute("/api/help")({
         const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
         if (!token) return new Response("Please sign in to ask for help.", { status: 401 });
         const { createClient } = await import("@supabase/supabase-js");
-        const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+        const sb = createClient(process.env["SUPABASE_URL"]!, process.env["SUPABASE_PUBLISHABLE_KEY"]!, {
           auth: { persistSession: false },
         });
         const { data: user } = await sb.auth.getUser(token);
