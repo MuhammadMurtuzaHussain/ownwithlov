@@ -25,11 +25,11 @@ function ArchCard({ data }: NodeProps<Node<NodeData>>) {
   return (
     <div
       className={cn(
-        "relative w-56 rounded-2xl border-2 bg-card px-4 py-3 text-left shadow-soft transition-all",
+        "relative w-64 rounded-2xl border-2 bg-card px-4 py-3 text-left shadow-soft transition-all",
         !arch.required && "border-dashed",
         status === "done" && "border-success",
         status === "current" && "arch-pulse border-primary",
-        status === "upcoming" && "opacity-55 grayscale",
+        status === "upcoming" && "border-border opacity-80 saturate-50",
       )}
     >
       {status === "current" && (
@@ -37,9 +37,9 @@ function ArchCard({ data }: NodeProps<Node<NodeData>>) {
           <MapPin className="size-3" /> You are here
         </div>
       )}
-      <Handle type="target" position={Position.Left} className="!size-2 !border-0 !bg-muted-foreground/50" />
+      <Handle type="target" position={Position.Top} className="!size-2 !border-0 !bg-muted-foreground/50" />
       <div className="flex items-center justify-between gap-2">
-        <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+        <span className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
           {arch.label} · {ROLE_LABEL[arch.role]}
           {!arch.required && " · Optional"}
         </span>
@@ -49,17 +49,19 @@ function ArchCard({ data }: NodeProps<Node<NodeData>>) {
           </span>
         )}
       </div>
-      <div className="mt-1 font-display text-base leading-tight font-semibold">{arch.name}</div>
-      <div className="mt-0.5 text-xs text-muted-foreground">{arch.techName}</div>
-      <Handle type="source" position={Position.Right} className="!size-2 !border-0 !bg-muted-foreground/50" />
+      <div className="mt-1 font-display text-lg leading-tight font-semibold">{arch.name}</div>
+      <div className="mt-0.5 text-sm text-muted-foreground">{arch.techName}</div>
+      <Handle id="r" type="source" position={Position.Right} className="!size-2 !border-0 !bg-muted-foreground/50" />
+      <Handle id="l" type="target" position={Position.Left} className="!size-2 !border-0 !bg-muted-foreground/50" />
+      <Handle type="source" position={Position.Bottom} className="!size-2 !border-0 !bg-muted-foreground/50" />
     </div>
   );
 }
 
 function PhaseHeader({ data }: NodeProps<Node<{ phase: number }>>) {
   return (
-    <div className="pointer-events-none w-56 border-b-2 border-dashed pb-2 text-center">
-      <div className="text-[10px] font-semibold tracking-widest text-primary uppercase">Phase {data.phase}</div>
+    <div className="pointer-events-none flex w-[560px] items-baseline gap-2 border-b-2 border-dashed pb-1.5">
+      <div className="text-xs font-semibold tracking-widest text-primary uppercase">Phase {data.phase}</div>
       <div className="font-display text-lg font-semibold">{PHASES[data.phase - 1]?.label}</div>
     </div>
   );
@@ -128,8 +130,8 @@ export function ArchitectureSection({
 
   const { nodes, edges } = useMemo(() => {
     // Clear columns: one per phase, with a header, cards centred vertically
-    const COL_W = 320;
-    const ROW_H = 150;
+    const COL_W = 304;
+    const ROW_H = 230;
     const byPhase = new Map<number, ArchNode[]>();
     for (const n of arch.nodes) {
       const list = byPhase.get(n.phase) ?? [];
@@ -137,42 +139,35 @@ export function ArchitectureSection({
       byPhase.set(n.phase, list);
     }
     const phases = [...byPhase.keys()].sort((a, b) => a - b);
-    const maxRows = Math.max(1, ...[...byPhase.values()].map((l) => l.length));
     const nodes: Node<any>[] = [];
-    phases.forEach((phase, col) => {
+    phases.forEach((phase, row) => {
       const list = byPhase.get(phase)!;
-      const x = col * COL_W;
-      nodes.push({
-        id: `phase-${phase}`,
-        type: "phaseHeader",
-        position: { x, y: -90 },
-        data: { phase },
-        selectable: false,
-        draggable: false,
-      });
-      const offset = ((maxRows - list.length) * ROW_H) / 2;
+      const y = row * ROW_H;
+      nodes.push({ id: `phase-${phase}`, type: "phaseHeader", position: { x: 0, y }, data: { phase }, selectable: false, draggable: false });
+      const offset = ((2 - Math.min(list.length, 2)) * COL_W) / 2;
       list.forEach((n, i) => {
-        nodes.push({
-          id: n.id,
-          type: "arch",
-          position: { x, y: offset + i * ROW_H },
-          data: { arch: n, status: statusOf(n) },
-        });
+        nodes.push({ id: n.id, type: "arch", position: { x: offset + i * COL_W, y: y + 70 }, data: { arch: n, status: statusOf(n) } });
       });
     });
-    const edges: Edge[] = arch.edges.map((e, i) => ({
+    const phaseOf = new Map(arch.nodes.map((n) => [n.id, n.phase]));
+    const edges: Edge[] = arch.edges.map((e, i) => {
+      const sameRow = phaseOf.get(e.from) === phaseOf.get(e.to);
+      const pos = Object.fromEntries(nodes.map((n) => [n.id, n.position.x]));
+      const ltr = (pos[e.from] ?? 0) <= (pos[e.to] ?? 0);
+      return {
       id: `e${i}`,
-      source: e.from,
-      target: e.to,
-      type: "smoothstep",
-      label: e.label,
+      source: sameRow && !ltr ? e.to : e.from,
+      target: sameRow && !ltr ? e.from : e.to,
+      ...(sameRow ? { sourceHandle: "r", targetHandle: "l", type: "straight" } : { type: "smoothstep" }),
+      label: sameRow ? undefined : e.label,
       markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: "var(--muted-foreground)" },
-      labelStyle: { fontSize: 11, fill: "var(--foreground)", fontWeight: 500 },
+      labelStyle: { fontSize: 13, fill: "var(--foreground)", fontWeight: 500 },
       labelBgStyle: { fill: "var(--card)", stroke: "var(--border)" },
       labelBgPadding: [6, 3] as [number, number],
       labelBgBorderRadius: 6,
       style: { stroke: "var(--muted-foreground)", strokeWidth: 1.5, strokeOpacity: 0.7 },
-    }));
+      };
+    });
     return { nodes, edges };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arch, currentPhase, done]);
@@ -224,13 +219,15 @@ export function ArchitectureSection({
             <span className="flex items-center gap-1.5"><CircleDashed className="size-4" /> Coming up (faded)</span>
             <span className="flex items-center gap-1.5"><span className="h-3 w-5 rounded border-2 border-dashed border-muted-foreground" /> Optional</span>
           </div>
-          <div className="h-[560px] overflow-hidden rounded-2xl border bg-card shadow-soft">
+          <div className="overflow-hidden rounded-2xl border bg-card shadow-soft" style={{ height: Math.max(420, new Set(arch.nodes.map((n) => n.phase)).size * 230 + 60) }}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
               nodeTypes={nodeTypes}
               fitView
-              fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
+              fitViewOptions={{ padding: 0.08, maxZoom: 1 }}
+              preventScrolling={false}
+              zoomOnScroll={false}
               minZoom={0.3}
               maxZoom={1.5}
               proOptions={{ hideAttribution: true }}
