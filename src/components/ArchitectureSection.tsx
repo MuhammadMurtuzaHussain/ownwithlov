@@ -108,7 +108,7 @@ export function ArchitectureSection({
   const sentence =
     currentPhase > 5
       ? "Everything is built and live — the whole map is yours. 🎉"
-      : `${PHASE_SENTENCES[currentPhase].done} ${PHASE_SENTENCES[currentPhase].next}`.trim();
+      : `${PHASE_SENTENCES[currentPhase]?.done ?? ""} ${PHASE_SENTENCES[currentPhase]?.next ?? ""}`.trim();
 
   const { nodes, edges } = useMemo(() => {
     // Left-to-right columns by phase, stacked vertically within a phase
@@ -145,7 +145,8 @@ export function ArchitectureSection({
 
   const goTo = (node: ArchNode) => {
     setSelected(null);
-    onGoToPhase(PHASES[node.phase - 1].key);
+    const target = PHASES[node.phase - 1];
+    if (target) onGoToPhase(target.key);
   };
 
   return (
@@ -280,7 +281,7 @@ export function ArchitectureSection({
                   </div>
                   <div className="flex-1 rounded-xl bg-muted p-3">
                     <div className="text-xs text-muted-foreground">You build it in</div>
-                    <div className="font-semibold">Phase {selected.phase}: {PHASES[selected.phase - 1].label}</div>
+                    <div className="font-semibold">Phase {selected.phase}: {PHASES[selected.phase - 1]?.label}</div>
                   </div>
                 </div>
                 <Button className="w-full" onClick={() => goTo(selected)}>
