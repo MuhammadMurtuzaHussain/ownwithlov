@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, Circle, Terminal } from "lucide-react";
-import demo from "@/lib/demo-plan.json";
-import { PHASES, totalYearlyCost } from "@/lib/plan-schema";
+import demoJson from "@/lib/demo-plan.json";
+import { PHASES, planSchema, totalYearlyCost } from "@/lib/plan-schema";
 import { cn } from "@/lib/utils";
+
+const demo = planSchema.parse(demoJson);
 
 export function PlanPreview() {
   const step = demo.setup.steps[3];
