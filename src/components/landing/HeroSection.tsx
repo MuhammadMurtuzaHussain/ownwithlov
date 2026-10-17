@@ -1,6 +1,6 @@
 // Adapted from 21st.dev "Hero Section" by ravikatiyar162
 import * as React from "react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -8,25 +8,24 @@ type Props = {
   title: React.ReactNode;
   subtitle: string;
   actions: React.ReactNode;
-  image: string;
-  imageAlt: string;
+  preview: React.ReactNode;
   footer: React.ReactNode;
-  badge?: React.ReactNode;
   className?: string;
 };
 
 const container: Variants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.15 } } };
 const item: Variants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } } };
 
-export function HeroSection({ eyebrow, title, subtitle, actions, image, imageAlt, footer, badge, className }: Props) {
+export function HeroSection({ eyebrow, title, subtitle, actions, preview, footer, className }: Props) {
+  const reduce = useReducedMotion();
   return (
     <motion.section
-      className={cn("relative flex w-full flex-col overflow-hidden rounded-[2rem] border bg-card shadow-lift md:flex-row", className)}
-      initial="hidden"
+      className={cn("relative grid w-full items-center gap-10 py-6 lg:grid-cols-[1.1fr_1fr] lg:gap-12", className)}
+      initial={reduce ? false : "hidden"}
       animate="visible"
       variants={container}
     >
-      <div className="flex w-full flex-col justify-between gap-10 p-8 md:w-3/5 md:p-12 lg:p-16">
+      <div className="flex min-w-0 flex-col justify-between gap-10">
         <div>
           <motion.p variants={item} className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
             {eyebrow}
@@ -45,13 +44,10 @@ export function HeroSection({ eyebrow, title, subtitle, actions, image, imageAlt
         <motion.div variants={item}>{footer}</motion.div>
       </div>
       <motion.div
-        className="relative min-h-[300px] w-full md:min-h-full md:w-2/5"
-        initial={{ clipPath: "polygon(100% 0, 100% 0, 100% 100%, 100% 100%)" }}
-        animate={{ clipPath: "polygon(25% 0, 100% 0, 100% 100%, 0% 100%)" }}
-        transition={{ duration: 1.2, ease: "circOut" }}
+        className="mx-auto w-full min-w-0 max-w-lg"
+        variants={item}
       >
-        <img src={image} alt={imageAlt} className="absolute inset-0 size-full object-cover object-left-top" />
-        {badge && <div className="absolute right-5 bottom-5">{badge}</div>}
+        {preview}
       </motion.div>
     </motion.section>
   );
