@@ -211,7 +211,7 @@ export function ArchitectureSection({
             <span className="flex items-center gap-1.5"><CircleDashed className="size-4" /> Coming up (faded)</span>
             <span className="flex items-center gap-1.5"><span className="h-3 w-5 rounded border-2 border-dashed border-muted-foreground" /> Optional</span>
           </div>
-          <div className="overflow-hidden" style={{ height: Math.max(420, new Set(arch.nodes.map((n) => n.phase)).size * 230 + 60) }} data-x=" rounded-2xl border bg-card shadow-soft">
+          <div className="overflow-hidden rounded-2xl border bg-card shadow-soft" style={{ height: Math.max(420, new Set(arch.nodes.map((n) => n.phase)).size * 230 + 60) }}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
