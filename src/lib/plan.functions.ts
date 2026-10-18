@@ -2,6 +2,29 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+// Asks the model for a plan and validates it, retrying once if the JSON comes back malformed.
+async function generateValidPlan(prompt: string, shapeError: string) {
+  const { generateText } = await import("ai");
+  const { AI_MODEL, aiOptions, MENTOR_TONE, friendlyAiError } = await import("./ai.server");
+  const { planSchema } = await import("./plan-schema");
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    let text: string;
+    try {
+      ({ text } = await generateText({ model: AI_MODEL, system: MENTOR_TONE, prompt, providerOptions: aiOptions }));
+    } catch (err) {
+      console.error(err);
+      throw new Error(friendlyAiError(err));
+    }
+    try {
+      return planSchema.parse(JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)));
+    } catch (err) {
+      console.error(`Plan parse failed (attempt ${attempt + 1})`, err);
+    }
+  }
+  throw new Error(shapeError);
+}
+
 const answersSchema = z.object({
   idea: z.string().min(1).max(2000),
   audience: z.string().max(1000),
@@ -16,9 +39,6 @@ export const generatePlan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => answersSchema.parse(d))
   .handler(async ({ data, context }) => {
-    const { streamText } = await import("ai");
-    const { createGateway, AI_MODEL, openaiOptions, MENTOR_TONE, friendlyAiError } = await import("./ai.server");
-    const { planSchema } = await import("./plan-schema");
     const example = (await import("./demo-plan.json")).default;
 
     const prompt = `Create a personalised Build Plan as JSON for this person.
@@ -42,29 +62,7 @@ Rules:
 - Output ONLY the JSON object, no markdown fences, in exactly the same shape as this example:
 ${JSON.stringify(example)}`;
 
-    let text = "";
-    try {
-      const result = streamText({
-        model: createGateway().responses(AI_MODEL),
-        system: MENTOR_TONE,
-        prompt,
-        providerOptions: openaiOptions,
-      });
-      text = await result.text;
-    } catch (err) {
-      console.error(err);
-      throw new Error(friendlyAiError(err));
-    }
-
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    let plan;
-    try {
-      plan = planSchema.parse(JSON.parse(text.slice(start, end + 1)));
-    } catch (err) {
-      console.error("Plan parse failed", err);
-      throw new Error("The plan came back in an odd shape. Please try once more.");
-    }
+    const plan = await generateValidPlan(prompt, "The plan came back in an odd shape. Please try once more.");
 
     const { data: row, error } = await context.supabase
       .from("plans")
@@ -81,9 +79,6 @@ export const revisePlan = createServerFn({ method: "POST" })
     z.object({ planId: z.string().uuid(), notes: z.string().max(2000).optional() }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { streamText } = await import("ai");
-    const { createGateway, AI_MODEL, openaiOptions, MENTOR_TONE, friendlyAiError } = await import("./ai.server");
-    const { planSchema } = await import("./plan-schema");
 
     const { data: row, error: loadError } = await context.supabase
       .from("plans")
@@ -107,29 +102,7 @@ Rules:
 - Commands must still match their operating system; costs stay in euros per year.
 - Output ONLY the JSON object, no markdown fences.`;
 
-    let text = "";
-    try {
-      const result = streamText({
-        model: createGateway().responses(AI_MODEL),
-        system: MENTOR_TONE,
-        prompt,
-        providerOptions: openaiOptions,
-      });
-      text = await result.text;
-    } catch (err) {
-      console.error(err);
-      throw new Error(friendlyAiError(err));
-    }
-
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    let plan;
-    try {
-      plan = planSchema.parse(JSON.parse(text.slice(start, end + 1)));
-    } catch (err) {
-      console.error("Plan parse failed", err);
-      throw new Error("The revised plan came back in an odd shape. Please try once more.");
-    }
+    const plan = await generateValidPlan(prompt, "The revised plan came back in an odd shape. Please try once more.");
 
     const { error } = await context.supabase.from("plans").update({ plan }).eq("id", data.planId);
     if (error) throw new Error("Couldn't save your revised plan. Please try again.");

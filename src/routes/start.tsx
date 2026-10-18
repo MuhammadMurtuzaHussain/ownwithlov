@@ -15,9 +15,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
-      { title: "Start your build — ownwithlov" },
+      { title: "Start your build — Ownable" },
       { name: "description", content: "Answer a few friendly questions and get a personalised build plan." },
-      { property: "og:title", content: "Start your build — ownwithlov" },
+      { property: "og:title", content: "Start your build — Ownable" },
       { property: "og:description", content: "Answer a few friendly questions and get a personalised build plan." },
     ],
   }),

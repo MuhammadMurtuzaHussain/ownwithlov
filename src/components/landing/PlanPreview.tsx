@@ -11,7 +11,7 @@ export function PlanPreview() {
   return (
     <Link to="/demo" aria-label="Open the Lotus Booking example plan" className="block w-full rounded-lg border bg-card text-card-foreground shadow-lift transition-shadow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
       <div className="flex items-center justify-between gap-3 border-b px-6 py-4">
-        <span className="font-display text-xl">ownwithlov <span className="ml-2 font-sans text-xs text-muted-foreground">Example plan</span></span>
+        <span className="font-display text-xl">Ownable <span className="ml-2 font-sans text-xs text-muted-foreground">Example plan</span></span>
         <ArrowUpRight className="size-5 text-primary" aria-hidden />
       </div>
       <div className="px-6 py-5">

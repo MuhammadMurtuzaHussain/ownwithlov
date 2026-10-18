@@ -12,4 +12,6 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Deploy target: Vercel (Fluid Compute, Node.js runtime).
+  nitro: { preset: "vercel" },
 });

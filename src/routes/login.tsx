@@ -12,9 +12,9 @@ import { useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign in — ownwithlov" },
+      { title: "Sign in — Ownable" },
       { name: "description", content: "Sign in to save your build plan and progress." },
-      { property: "og:title", content: "Sign in — ownwithlov" },
+      { property: "og:title", content: "Sign in — Ownable" },
       { property: "og:description", content: "Sign in to save your build plan and progress." },
     ],
   }),
@@ -28,6 +28,9 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  // Google sign-in goes through Lovable's OAuth broker, which only exists on Lovable hosting.
+  const [onLovable, setOnLovable] = useState(false);
+  useEffect(() => setOnLovable(/\.lovable\.app$|\.lovableproject\.com$/.test(window.location.hostname)), []);
 
   useEffect(() => {
     if (session) navigate({ to: "/start" });
@@ -58,20 +61,24 @@ function Login() {
         <div className="rounded-3xl border bg-card p-7 shadow-lift">
           <h1 className="text-3xl">{mode === "up" ? "Let's get started" : "Welcome back"}</h1>
           <p className="mt-1 text-sm text-muted-foreground">So we can save your plan and progress.</p>
-          <Button
-            variant="outline"
-            className="mt-6 w-full"
-            onClick={async () => {
-              const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-              if (r.error) toast.error("Google sign-in didn't work. Please try again.");
-            }}
-          >
-            Continue with Google
-          </Button>
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" />
-          </div>
-          <form onSubmit={submit} className="space-y-4">
+          {onLovable && (
+            <>
+              <Button
+                variant="outline"
+                className="mt-6 w-full"
+                onClick={async () => {
+                  const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+                  if (r.error) toast.error("Google sign-in didn't work. Please try again.");
+                }}
+              >
+                Continue with Google
+              </Button>
+              <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="h-px flex-1 bg-border" />or<span className="h-px flex-1 bg-border" />
+              </div>
+            </>
+          )}
+          <form onSubmit={submit} className={onLovable ? "space-y-4" : "mt-6 space-y-4"}>
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

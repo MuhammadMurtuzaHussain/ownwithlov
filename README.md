@@ -1,26 +1,31 @@
-# Ownwithlov
+# Ownable
 
-Here's the product
+**Build it. Ship it. Own it.** A patient AI mentor that turns an app idea into a step-by-step build plan using free, open-source tools.
 
-This project was built with [Lovable](https://lovable.dev).
+**Live:** https://ownable.muhammadmurtuza.com
 
-**Live app**: https://ownwithlov.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/c243b789-d2c7-4424-a068-7ef3297584a9).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Stack
+- TanStack Start (React 19, Vite, Nitro) deployed on Vercel (Node.js / Fluid Compute)
+- AI: open-weight models via Vercel AI Gateway: `openai/gpt-oss-120b` (Apache-2.0), falling back to DeepSeek V4 Flash and Qwen3. See `src/lib/ai.server.ts`.
+- Data & auth: Supabase
 
 ## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
 npm i
+vercel env pull   # Supabase keys + AI Gateway OIDC token into .env.local
 npm run dev
 ```
+
+## Deploy
+```sh
+vercel deploy --prod
+```
+
+## Team
+- [Muhammad Murtuza Hussain](https://www.linkedin.com/in/muhammadmurtuzahussain/)
+- [Aksharaa Guha](https://www.linkedin.com/in/aksharaag/)
+- [Abbineshkar Loganathan](https://www.linkedin.com/in/abbineshkar/)
+
+Support us: [Ko-fi](https://ko-fi.com/muhammadmurtuzahussain) · [Buy Me a Coffee](https://buymeacoffee.com/muhammadmurtuza)
+
+Originally prototyped with [Lovable](https://lovable.dev) at the Lovable hackathon, Galway, 2026.

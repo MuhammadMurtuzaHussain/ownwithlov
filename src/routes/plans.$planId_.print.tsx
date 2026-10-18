@@ -10,10 +10,10 @@ import { toolLinks } from "@/lib/tool-links";
 export const Route = createFileRoute("/plans/$planId_/print")({
   head: () => ({
     meta: [
-      { title: "Printable build plan — ownwithlov" },
-      { name: "description", content: "A large-print, paper-friendly copy of your ownwithlov build plan." },
-      { property: "og:title", content: "Printable build plan — ownwithlov" },
-      { property: "og:description", content: "A large-print, paper-friendly copy of your ownwithlov build plan." },
+      { title: "Printable build plan — Ownable" },
+      { name: "description", content: "A large-print, paper-friendly copy of your Ownable build plan." },
+      { property: "og:title", content: "Printable build plan — Ownable" },
+      { property: "og:description", content: "A large-print, paper-friendly copy of your Ownable build plan." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -25,7 +25,7 @@ const printCss = (name: string) => `
 @page { size: A4; margin: 18mm 16mm 20mm;
   @bottom-left { content: "${name}"; font: 10pt Figtree, sans-serif; color: #333; }
   @bottom-center { content: "Page " counter(page) " of " counter(pages); font: 10pt Figtree, sans-serif; color: #333; }
-  @bottom-right { content: "Made with ownwithlov"; font: 10pt Figtree, sans-serif; color: #333; }
+  @bottom-right { content: "Made with Ownable"; font: 10pt Figtree, sans-serif; color: #333; }
 }
 .print-doc { background: #fff; color: #111; font-size: 13pt; line-height: 1.6; }
 .print-doc h1, .print-doc h2, .print-doc h3 { color: #000; line-height: 1.2; }
@@ -99,7 +99,7 @@ function PrintDoc({ plan, done, planId, isDemo }: { plan: BuildPlan; done: Set<s
         <section className="flex min-h-[230mm] flex-col justify-between">
           <div className="flex items-center gap-3">
             <span className="grid size-12 place-items-center rounded-xl border-2 border-black font-display text-2xl">o</span>
-            <span className="font-display text-3xl">ownwithlov</span>
+            <span className="font-display text-3xl">Ownable</span>
           </div>
           <div>
             <div className="text-base font-semibold tracking-widest uppercase">Your Build Plan</div>
